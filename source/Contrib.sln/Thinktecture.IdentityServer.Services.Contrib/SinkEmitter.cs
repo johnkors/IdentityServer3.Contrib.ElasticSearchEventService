@@ -1,0 +1,53 @@
+using System;
+using System.Collections.Generic;
+using Serilog.Events;
+using Serilog.Parsing;
+using Serilog.Sinks.ElasticSearch;
+using Thinktecture.IdentityServer.Core.Events;
+
+namespace Thinktecture.IdentityServer.Services.Contrib
+{
+    public class Emitter
+    {
+        private readonly IElasticSearchEventConfig _conf;
+        private readonly ElasticsearchSink _nativeSink;
+
+        public Emitter(ElasticsearchSinkOptions opts)
+        {
+            _nativeSink = new ElasticsearchSink(opts);
+        }
+
+        public void Emit<T>(Event<T> evt, Action<List<LogEventProperty>> addAdditionalProperties = null)
+        {
+            string typeName = !string.IsNullOrEmpty(_conf.TypeName) ? _conf.TypeName : "IdServerEvent";
+            var properties = new List<LogEventProperty>
+            {
+                new LogEventProperty("Type", new ScalarValue(typeName)),
+                new LogEventProperty("Category", new ScalarValue(evt.Category)),
+                new LogEventProperty("ActivityId", new ScalarValue(evt.Context.ActivityId)),
+                new LogEventProperty("MachineName", new ScalarValue(evt.Context.MachineName)),
+                new LogEventProperty("ProcessId", new ScalarValue(evt.Context.ProcessId)),
+                new LogEventProperty("RemoteIpAddress", new ScalarValue(evt.Context.RemoteIpAddress)),
+                new LogEventProperty("SubjectId", new ScalarValue(evt.Context.SubjectId)),
+                new LogEventProperty("Details", new ScalarValue(evt.Details)),
+                new LogEventProperty("EventType", new ScalarValue(evt.EventType)),
+                new LogEventProperty("Id", new ScalarValue(evt.Id)),
+                new LogEventProperty("Message", new ScalarValue(evt.Message)),
+                new LogEventProperty("Name", new ScalarValue(evt.Name))
+            };
+
+            if (addAdditionalProperties != null)
+            {
+                addAdditionalProperties(properties);
+            }
+
+            var messageTemplateTokens = new List<MessageTemplateToken>
+            {
+                new PropertyToken("message", evt.Message)
+            };
+            var messageTemplate = new MessageTemplate(evt.Message, messageTemplateTokens);
+            var nativeEvent = new LogEvent(evt.Context.TimeStamp, LogEventLevel.Information, null, messageTemplate, properties);
+            _nativeSink.Emit(nativeEvent);
+        }
+    }
+}
