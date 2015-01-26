@@ -9,7 +9,6 @@ namespace Thinktecture.IdentityServer.Services.Contrib
 {
     public class Emitter
     {
-        private readonly IElasticSearchEventConfig _conf;
         private readonly ElasticsearchSink _nativeSink;
 
         public Emitter(ElasticsearchSinkOptions opts)
@@ -19,10 +18,9 @@ namespace Thinktecture.IdentityServer.Services.Contrib
 
         public void Emit<T>(Event<T> evt, Action<List<LogEventProperty>> addAdditionalProperties = null)
         {
-            string typeName = !string.IsNullOrEmpty(_conf.TypeName) ? _conf.TypeName : "IdServerEvent";
             var properties = new List<LogEventProperty>
             {
-                new LogEventProperty("Type", new ScalarValue(typeName)),
+                new LogEventProperty("Type", new ScalarValue("IdServerEvent")),
                 new LogEventProperty("Category", new ScalarValue(evt.Category)),
                 new LogEventProperty("ActivityId", new ScalarValue(evt.Context.ActivityId)),
                 new LogEventProperty("MachineName", new ScalarValue(evt.Context.MachineName)),
