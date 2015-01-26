@@ -8,7 +8,7 @@ Implementation of IdentityServerV3s IEventService using Serilogs ElasticSearchSi
 ```
    var elasticUri = new Uri("http://your.elasticsearch.instance/");
    var options = new ElasticsearchSinkOptions(elasticUri);
-   var eventService = new EventService(options);
+   var eventService = new ElasticSearchEventService(options);
 ```
 
 ## Dependencies
