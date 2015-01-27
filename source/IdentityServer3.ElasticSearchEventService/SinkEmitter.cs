@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Parsing;
@@ -18,6 +19,7 @@ namespace Thinktecture.IdentityServer.Services.Contrib
 
         public void Emit<T>(Event<T> evt, Action<List<LogEventProperty>> addAdditionalProperties = null)
         {
+            var jsonDetails = JsonConvert.SerializeObject(evt.Details);
             var properties = new List<LogEventProperty>
             {
                 new LogEventProperty("Type", new ScalarValue("IdServerEvent")),
@@ -27,7 +29,7 @@ namespace Thinktecture.IdentityServer.Services.Contrib
                 new LogEventProperty("ProcessId", new ScalarValue(evt.Context.ProcessId)),
                 new LogEventProperty("RemoteIpAddress", new ScalarValue(evt.Context.RemoteIpAddress)),
                 new LogEventProperty("SubjectId", new ScalarValue(evt.Context.SubjectId)),
-                new LogEventProperty("Details", new ScalarValue(evt.Details)),
+                new LogEventProperty("Details", new ScalarValue(jsonDetails)),
                 new LogEventProperty("EventType", new ScalarValue(evt.EventType)),
                 new LogEventProperty("Id", new ScalarValue(evt.Id)),
                 new LogEventProperty("Message", new ScalarValue(evt.Message)),
