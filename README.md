@@ -13,6 +13,16 @@ Implementation of IdentityServerV3s IEventService using Serilogs ElasticSearchSi
    var eventService = new ElasticSearchEventService(options);
 ```
 
+## Install
+
+```
+  PM> Install-Package IdentityServer3.ElasticSearchEventService
+```
+
+NuGet: 
+https://www.nuget.org/packages/IdentityServer3.ElasticSearchEventService
+
+
 ## Dependencies
 
  * Thinktecture.IdentityServer3 - http://www.nuget.org/packages/Thinktecture.IdentityServer3/
