@@ -86,4 +86,5 @@
     verbosity: minimal
   test:
     assemblies:
-      - '**\*.tests.dll'
+      - '**\*tests.dll'
+      -
