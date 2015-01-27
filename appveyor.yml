@@ -1,6 +1,7 @@
 version: 1.0.{build}
-before_build:
-  - nuget restore
+
+install:
+  - cmd: nuget restore source\Thinktecture.IdentityServer.Services.Contrib\packages.config -SolutionDirectory .
 build:
   project: source/Contrib.sln  
   publish_nuget: true
