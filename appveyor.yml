@@ -1,4 +1,10 @@
 version: 0.0.{build}
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
 
 install:
   - cmd: nuget restore source\Contrib.sln\Contrib.sln
@@ -6,6 +12,8 @@ build:
   project: source\Contrib.sln\Contrib.sln  
   publish_nuget: true
   verbosity: minimal
+before_build:
+- ps: updatenuspecversion.ps1
 deploy:
   provider: NuGet
   api_key:
