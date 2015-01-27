@@ -7,8 +7,8 @@
     <ProjectGuid>{00DF6C3B-19B8-4B4B-89CC-C6CED2364C26}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Thinktecture.IdentityServer.Services.Contrib</RootNamespace>
-    <AssemblyName>Thinktecture.IdentityServer.Services.Contrib</AssemblyName>
+    <RootNamespace>IdentityServer3.ElasticSearchEventService</RootNamespace>
+    <AssemblyName>IdentityServer3.ElasticSearchEventService</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,6 +32,9 @@
   <ItemGroup>
     <Reference Include="Elasticsearch.Net">
       <HintPath>..\packages\Elasticsearch.Net.1.1.2\lib\Elasticsearch.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Owin">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
@@ -63,7 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="ThinkTecture.IdentityServer.Services.Contrib.nuspec" />
+    <None Include="IdentityServer3.ElasticSearchEventService.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

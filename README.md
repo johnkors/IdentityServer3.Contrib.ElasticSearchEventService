@@ -1,4 +1,5 @@
 Master build: [![Build status](https://ci.appveyor.com/api/projects/status/5o9shqnmao5ln18w/branch/master?svg=true)](https://ci.appveyor.com/project/JohnKorsnes/identityserverv3-contrib/branch/master)
+Dev build: [![Build status](https://ci.appveyor.com/api/projects/status/5o9shqnmao5ln18w/branch/dev?svg=true)](https://ci.appveyor.com/project/JohnKorsnes/identityserverv3-contrib/branch/dev)
 
 # Contents
 
@@ -19,7 +20,7 @@ Implementation of IdentityServerV3s IEventService using Serilogs ElasticSearchSi
   PM> Install-Package IdentityServer3.ElasticSearchEventService
 ```
 
-NuGet: 
+NuGet:
 https://www.nuget.org/packages/IdentityServer3.ElasticSearchEventService
 
 

@@ -1,23 +1,25 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using Serilog.Core;
 using Serilog.Events;
 using Serilog.Parsing;
-using Serilog.Sinks.ElasticSearch;
 using Thinktecture.IdentityServer.Core.Events;
 
 namespace Thinktecture.IdentityServer.Services.Contrib
 {
     public class Emitter
     {
-        private readonly ElasticsearchSink _nativeSink;
+        private readonly ILogEventSink _sink;
 
-        public Emitter(ElasticsearchSinkOptions opts)
+        public Emitter(ILogEventSink sink)
         {
-            _nativeSink = new ElasticsearchSink(opts);
+            _sink = sink;
         }
 
         public void Emit<T>(Event<T> evt, Action<List<LogEventProperty>> addAdditionalProperties = null)
         {
+            var jsonDetails = JsonConvert.SerializeObject(evt.Details);
             var properties = new List<LogEventProperty>
             {
                 new LogEventProperty("Type", new ScalarValue("IdServerEvent")),
@@ -27,7 +29,7 @@ namespace Thinktecture.IdentityServer.Services.Contrib
                 new LogEventProperty("ProcessId", new ScalarValue(evt.Context.ProcessId)),
                 new LogEventProperty("RemoteIpAddress", new ScalarValue(evt.Context.RemoteIpAddress)),
                 new LogEventProperty("SubjectId", new ScalarValue(evt.Context.SubjectId)),
-                new LogEventProperty("Details", new ScalarValue(evt.Details)),
+                new LogEventProperty("Details", new ScalarValue(jsonDetails)),
                 new LogEventProperty("EventType", new ScalarValue(evt.EventType)),
                 new LogEventProperty("Id", new ScalarValue(evt.Id)),
                 new LogEventProperty("Message", new ScalarValue(evt.Message)),
@@ -45,7 +47,7 @@ namespace Thinktecture.IdentityServer.Services.Contrib
             };
             var messageTemplate = new MessageTemplate(evt.Message, messageTemplateTokens);
             var nativeEvent = new LogEvent(evt.Context.TimeStamp, LogEventLevel.Information, null, messageTemplate, properties);
-            _nativeSink.Emit(nativeEvent);
+            _sink.Emit(nativeEvent);
         }
     }
 }
