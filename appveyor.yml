@@ -18,7 +18,7 @@
   before_build:
     - ps: .\updatenuspecversion.ps1
   build:
-    project: source\Contrib.sln\Contrib.sln
+    project: source\Contrib.sln
     publish_nuget: true
     verbosity: minimal
   test:
