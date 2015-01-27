@@ -1,6 +1,6 @@
 version: 1.0.{build}
 before_build:
-  - source\nuget restore
+  - source\Thinktecture.IdentityServer.Services.Contrib\nuget restore
 build:
   publish_nuget: true
   verbosity: minimal
