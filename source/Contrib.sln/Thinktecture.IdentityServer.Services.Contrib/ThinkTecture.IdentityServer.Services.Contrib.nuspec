@@ -1,15 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-﻿
+<?xml version="1.0" ?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
-    <id>Thinktecture.IdentityServer3.Contrib</id>
+    <id>IdentityServer3.Services.ElasticSearchEventService</id>
     <version>$version$</version>
     <authors>John Korsnes</authors>
-    <description>Extensions for using ElasticSearch in IdentityServerv3 </description>
-    <projectUrl>http://github.com/nrkno/nrk.idserver.logging</projectUrl>
+    <description>IEventServivce implementation for using ElasticSearch in IdentityServerv3 </description>
+    <projectUrl>http://github.com/nrkno/IdentityServerV3.Contrib</projectUrl>
     <iconUrl>http://www.nrk.no/drfront/gfx/nrk-logo-white-72x26.png</iconUrl>
     <releaseNotes>
-      Simple IEventService implementation using Serilogs ElasticSearch sink to emit IdentityServer v3 events.
+      Simple IEventService implementation using Serilogs ElasticSearch sink to emit IdentityServer v3 events to ElasticSearch on a format fit for Kibana
     </releaseNotes>
   </metadata>
 </package>
