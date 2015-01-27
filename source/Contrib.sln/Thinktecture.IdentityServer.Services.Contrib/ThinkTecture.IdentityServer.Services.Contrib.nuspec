@@ -1,7 +1,9 @@
 <?xml version="1.0" ?>
 <package>
   <metadata>
-    <id>IdentityServer3.Services.ElasticSearchEventService</id>
+    <id>IdentityServer3.ElasticSearchEventService</id>
+    <title>Thinktecture IdentityServer3 - ElasticSearchEventService</title>
+    <version>$version$</version>
     <authors>John Korsnes</authors>
     <description>IEventServivce implementation for using ElasticSearch in IdentityServerv3 </description>
     <projectUrl>http://github.com/nrkno/IdentityServerV3.Contrib</projectUrl>
