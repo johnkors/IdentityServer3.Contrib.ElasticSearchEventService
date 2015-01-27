@@ -14,7 +14,7 @@
     assembly_informational_version: '{version}'
 
   install:
-    - cmd: nuget restore source\Contrib.sln\Contrib.sln
+    - cmd: nuget restore source\Contrib.sln
   before_build:
     - ps: .\updatenuspecversion.ps1
   build:
@@ -44,11 +44,11 @@
     assembly_informational_version: '{version}'
 
   install:
-    - cmd: nuget restore source\Contrib.sln\Contrib.sln
+    - cmd: nuget restore source\Contrib.sln
   before_build:
     - ps: .\updatenuspecversion.ps1
   build:
-    project: source\Contrib.sln\Contrib.sln
+    project: source\Contrib.sln
     publish_nuget: true
     verbosity: minimal
   deploy:
@@ -71,8 +71,10 @@
     assembly_informational_version: '{version}'
 
   install:
-    - cmd: nuget restore source\Contrib.sln\Contrib.sln
+    - cmd: nuget restore source\Contrib.sln
+  before_build:
+    - ps: .\updatenuspecversion.ps1
   build:
-    project: source\Contrib.sln\Contrib.sln
-    publish_nuget: true
+    project: source\Contrib.sln
+    publish_nuget: false
     verbosity: minimal
