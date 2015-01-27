@@ -3,7 +3,7 @@ version: 0.0.{build}
 install:
   - cmd: nuget restore source\Contrib.sln\Thinktecture.IdentityServer.Services.Contrib\packages.config -SolutionDirectory .
 build:
-  project: source\Contrib.sln  
+  project: source\Contrib.sln\Contrib.sln  
   publish_nuget: true
   verbosity: minimal
 deploy:
