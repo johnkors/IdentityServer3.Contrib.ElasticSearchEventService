@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thinktecture.IdentityServer.Services.Contrib", "Thinktecture.IdentityServer.Services.Contrib\Thinktecture.IdentityServer.Services.Contrib.csproj", "{00DF6C3B-19B8-4B4B-89CC-C6CED2364C26}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer3.ElasticSearchEventService", "IdentityServer3.ElasticSearchEventService\IdentityServer3.ElasticSearchEventService.csproj", "{00DF6C3B-19B8-4B4B-89CC-C6CED2364C26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

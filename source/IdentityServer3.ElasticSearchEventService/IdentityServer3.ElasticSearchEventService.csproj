@@ -7,8 +7,8 @@
     <ProjectGuid>{00DF6C3B-19B8-4B4B-89CC-C6CED2364C26}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Thinktecture.IdentityServer.Services.Contrib</RootNamespace>
-    <AssemblyName>Thinktecture.IdentityServer.Services.Contrib</AssemblyName>
+    <RootNamespace>IdentityServer3.ElasticSearchEventService</RootNamespace>
+    <AssemblyName>IdentityServer3.ElasticSearchEventService</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
