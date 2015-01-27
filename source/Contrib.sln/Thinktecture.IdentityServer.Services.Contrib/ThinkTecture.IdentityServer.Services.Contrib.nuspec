@@ -2,7 +2,6 @@
 <package>
   <metadata>
     <id>IdentityServer3.Services.ElasticSearchEventService</id>
-    <version>$version$</version>
     <authors>John Korsnes</authors>
     <description>IEventServivce implementation for using ElasticSearch in IdentityServerv3 </description>
     <projectUrl>http://github.com/nrkno/IdentityServerV3.Contrib</projectUrl>
