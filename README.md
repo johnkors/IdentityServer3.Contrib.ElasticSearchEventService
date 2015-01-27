@@ -1,3 +1,5 @@
+Master build: [![Build status](https://ci.appveyor.com/api/projects/status/5o9shqnmao5ln18w/branch/master?svg=true)](https://ci.appveyor.com/project/JohnKorsnes/identityserverv3-contrib/branch/master)
+
 # Contents
 
 Implementation of IdentityServerV3s IEventService using Serilogs ElasticSearchSink to push IdentityServerv3 events on a format useful for Kibana.
