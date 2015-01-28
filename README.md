@@ -53,6 +53,9 @@ NuGet:
 https://www.nuget.org/packages/IdentityServer3.ElasticSearchEventService
 
 
+Kibana screenshots
+![Kibana](https://cloud.githubusercontent.com/assets/206726/5944395/eafc0ee2-a726-11e4-9238-805555b60165.png)
+
 ## Dependencies
 
  * Thinktecture.IdentityServer3 - http://www.nuget.org/packages/Thinktecture.IdentityServer3/
