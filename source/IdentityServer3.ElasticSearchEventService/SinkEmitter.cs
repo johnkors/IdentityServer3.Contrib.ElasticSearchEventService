@@ -35,8 +35,7 @@ namespace Thinktecture.IdentityServer.Services.Contrib
             }
 
             var properties = new List<LogEventProperty>
-            {                
-                LogEventProp("Type", "IdServerEvent"),
+            {   
                 LogEventProp("Category", evt.Category),
                 LogEventProp("Details", details),
                 LogEventProp("EventType", evt.EventType),

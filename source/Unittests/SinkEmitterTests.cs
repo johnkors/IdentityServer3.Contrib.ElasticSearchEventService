@@ -158,7 +158,6 @@ namespace Unittests
             var properties = new List<LogEventProperty>
             {
                 new LogEventProperty("HasContext", new ScalarValue(true)),
-                new LogEventProperty("Type", new ScalarValue("IdServerEvent")),
                 new LogEventProperty("Category", new ScalarValue(evt.Category)),
                 new LogEventProperty("Details", new ScalarValue(details)),
                 new LogEventProperty("EventType", new ScalarValue(evt.EventType)),
