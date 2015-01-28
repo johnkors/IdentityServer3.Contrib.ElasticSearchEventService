@@ -17,6 +17,32 @@ Implementation of IdentityServerV3s IEventService using Serilogs ElasticSearchSi
    var eventService = new ElasticSearchEventService(options);
 ```
 
+Also support for enrichment of other properties than IdentityServer3s internal properties through the ```IAddExtraPropertiesToEvents``` interface.
+
+```
+   IAddExtraPropertiesToEvents adder = new MyOwnPropertiesAdder()
+   var elasticUri = new Uri("http://your.elasticsearch.instance/");
+   var options = new ElasticsearchSinkOptions(elasticUri);
+   var eventService = new ElasticSearchEventService(options, adder);
+```
+
+where a simple implementation is
+
+```
+    public class MyOwnPropertiesAdder : IAddExtraPropertiesToEvents
+    {
+        public IDictionary<string, string> GetNonIdServerFields()
+        {
+            return new Dictionary<string, string>{ { "SomeFieldName", "SomeValue" } };
+        }
+    }
+
+```
+
+This example adds ```SomeFieldName : "SomeValueIWantOnEveryEvent"``` to every log statement sent to ElasticSearch.
+
+
+
 ## Install
 
 ```
@@ -31,3 +57,4 @@ https://www.nuget.org/packages/IdentityServer3.ElasticSearchEventService
 
  * Thinktecture.IdentityServer3 - http://www.nuget.org/packages/Thinktecture.IdentityServer3/
  * Serilog.Sinks.ElasticSearch - http://www.nuget.org/packages/Serilog.Sinks.ElasticSearch/
+ * Newtonsoft.Json - https://www.nuget.org/packages/Newtonsoft.Json/
