@@ -11,6 +11,7 @@ namespace Thinktecture.IdentityServer.Services.Contrib
     public class Emitter
     {
         private readonly ILogEventSink _sink;
+        private string _NONE = "None";
 
         public Emitter(ILogEventSink sink)
         {
@@ -19,35 +20,90 @@ namespace Thinktecture.IdentityServer.Services.Contrib
 
         public void Emit<T>(Event<T> evt, Action<List<LogEventProperty>> addAdditionalProperties = null)
         {
-            var jsonDetails = JsonConvert.SerializeObject(evt.Details);
-            var properties = new List<LogEventProperty>
+            var details = _NONE;
+            if (evt.Details != null)
             {
-                new LogEventProperty("Type", new ScalarValue("IdServerEvent")),
-                new LogEventProperty("Category", new ScalarValue(evt.Category)),
-                new LogEventProperty("ActivityId", new ScalarValue(evt.Context.ActivityId)),
-                new LogEventProperty("MachineName", new ScalarValue(evt.Context.MachineName)),
-                new LogEventProperty("ProcessId", new ScalarValue(evt.Context.ProcessId)),
-                new LogEventProperty("RemoteIpAddress", new ScalarValue(evt.Context.RemoteIpAddress)),
-                new LogEventProperty("SubjectId", new ScalarValue(evt.Context.SubjectId)),
-                new LogEventProperty("Details", new ScalarValue(jsonDetails)),
-                new LogEventProperty("EventType", new ScalarValue(evt.EventType)),
-                new LogEventProperty("Id", new ScalarValue(evt.Id)),
-                new LogEventProperty("Message", new ScalarValue(evt.Message)),
-                new LogEventProperty("Name", new ScalarValue(evt.Name))
+                try
+                {
+                    var jsonDetails = JsonConvert.SerializeObject(evt.Details);
+                    details = jsonDetails;
+                }
+                catch
+                {
+                    details = _NONE + ". Unserializable " + details.GetType();
+                }
+            }
+
+            var properties = new List<LogEventProperty>
+            {                
+                LogEventProp("Type", "IdServerEvent"),
+                LogEventProp("Category", evt.Category),
+                LogEventProp("Details", details),
+                LogEventProp("EventType", evt.EventType),
+                LogEventProp("Id", evt.Id),                                
+                LogEventProp("Name", evt.Name)
             };
+
+            var ts = DateTimeOffset.UtcNow;
+            if (evt.Context != null)
+            {
+                ts = evt.Context.TimeStamp;
+            }
+            
+            AddContextProps(properties, evt);
 
             if (addAdditionalProperties != null)
             {
                 addAdditionalProperties(properties);
             }
 
+            var msg = !string.IsNullOrEmpty(evt.Message) ? evt.Message : _NONE;
+
             var messageTemplateTokens = new List<MessageTemplateToken>
             {
-                new PropertyToken("message", evt.Message)
+                new PropertyToken("message", msg)
             };
+
             var messageTemplate = new MessageTemplate(evt.Message, messageTemplateTokens);
-            var nativeEvent = new LogEvent(evt.Context.TimeStamp, LogEventLevel.Information, null, messageTemplate, properties);
+            var nativeEvent = new LogEvent(ts, LogEventLevel.Information, null, messageTemplate, properties);
             _sink.Emit(nativeEvent);
+        }
+
+        private void AddContextProps<T>(List<LogEventProperty> properties, Event<T> evt)
+        {
+            if (evt.Context != null)
+            {
+                var contextProps = new List<LogEventProperty>
+                {
+                    new LogEventProperty("HasContext", new ScalarValue(true)),
+                    LogEventProp("ActivityId", evt.Context.ActivityId),
+                    LogEventProp("MachineName", evt.Context.MachineName),
+                    LogEventProp("ProcessId", evt.Context.ProcessId),
+                    LogEventProp("RemoteIpAddress", evt.Context.RemoteIpAddress),
+                    LogEventProp("SubjectId", evt.Context.SubjectId)
+                };
+                properties.AddRange(contextProps);
+            }
+            else
+            {
+                var emptyCtxProps = new List<LogEventProperty>
+                {
+                    new LogEventProperty("HasContext", new ScalarValue(false)),
+                    LogEventProp("ActivityId"),
+                    LogEventProp("MachineName"),
+                    LogEventProp("ProcessId"),
+                    LogEventProp("RemoteIpAddress"),
+                    LogEventProp("SubjectId")
+                };
+                properties.AddRange(emptyCtxProps);
+            }
+
+        }
+
+        private LogEventProperty LogEventProp(string name, object eventProp = null)
+        {
+            var prop = eventProp ?? _NONE;
+            return new LogEventProperty(name, new ScalarValue(prop));
         }
     }
 }
