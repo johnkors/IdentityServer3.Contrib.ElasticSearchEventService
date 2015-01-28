@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using Serilog.Core;
 using Serilog.Events;
@@ -11,14 +12,20 @@ namespace Thinktecture.IdentityServer.Services.Contrib
     public class Emitter
     {
         private readonly ILogEventSink _sink;
+        private readonly IAddExtraPropertiesToEvents _adder;
         private string _NONE = "None";
 
-        public Emitter(ILogEventSink sink)
+        public Emitter(ILogEventSink sink, IAddExtraPropertiesToEvents adder = null)
         {
+            if (sink == null)
+            {
+                throw new ArgumentNullException();
+            }
             _sink = sink;
+            _adder = adder ?? new NoOpAdder();
         }
 
-        public void Emit<T>(Event<T> evt, Action<List<LogEventProperty>> addAdditionalProperties = null)
+        public void Emit<T>(Event<T> evt)
         {
             var details = _NONE;
             if (evt.Details != null)
@@ -50,11 +57,7 @@ namespace Thinktecture.IdentityServer.Services.Contrib
             }
             
             AddContextProps(properties, evt);
-
-            if (addAdditionalProperties != null)
-            {
-                addAdditionalProperties(properties);
-            }
+            properties.AddRange(_adder.GetNonIdServerFields().Select(extra => LogEventProp(extra.Key, extra.Value)));
 
             var errorMessage = !string.IsNullOrEmpty(evt.Message) ? evt.Message : _NONE;
 

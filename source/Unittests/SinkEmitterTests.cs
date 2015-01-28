@@ -43,7 +43,7 @@ namespace Unittests
         {
             var mockSink = new Fake<ILogEventSink>();
             ILogEventSink logEventSink = mockSink.FakedObject;
-            var emitter = new Emitter(logEventSink);
+            var emitter = new Emitter(logEventSink, new TestAdder());
 
             var evt = CreateIdSrvEvent();
 
@@ -51,7 +51,7 @@ namespace Unittests
             LogEvent objectSentIn = null;
             A.CallTo(() => logEventSink.Emit(A<LogEvent>._)).Invokes(call => objectSentIn = call.GetArgument<LogEvent>(0));
 
-            emitter.Emit(evt, p => p.Add(new LogEventProperty("LogThis", new ScalarValue("SomeAdditionalValue"))));
+            emitter.Emit(evt);
 
 
             var expectedSerilogEvent = CreateExpectedLoggedSerilogEvent(evt, AdditionalProp:new LogEventProperty("LogThis", new ScalarValue("SomeAdditionalValue")));
@@ -193,6 +193,14 @@ namespace Unittests
             var options = new ElasticsearchSinkOptions(new Uri("http://your.elasticsearch.instance"));
             options.TypeName = "idsrvevent";
             return new ElasticsearchSink(options);
+        }
+    }
+
+    public class TestAdder : IAddExtraPropertiesToEvents
+    {
+        public IDictionary<string, string> GetNonIdServerFields()
+        {
+            return new Dictionary<string, string>{ { "LogThis", "SomeAdditionalValue"}};
         }
     }
 
