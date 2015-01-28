@@ -64,7 +64,7 @@ namespace Thinktecture.IdentityServer.Services.Contrib
                 new PropertyToken("message", msg)
             };
 
-            var messageTemplate = new MessageTemplate(evt.Message, messageTemplateTokens);
+            var messageTemplate = new MessageTemplate(msg, messageTemplateTokens);
             var nativeEvent = new LogEvent(ts, LogEventLevel.Information, null, messageTemplate, properties);
             _sink.Emit(nativeEvent);
         }

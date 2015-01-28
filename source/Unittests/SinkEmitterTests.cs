@@ -32,9 +32,9 @@ namespace Unittests
             emitter.Emit(evt);
 
             
-            var seriLogEvent = CreateExpectedLoggedSerilogEvent(evt);
+            var expectedLoggedSerilogEvent = CreateExpectedLoggedSerilogEvent(evt);
 
-            Assert.Equal(objectSentIn.Properties, seriLogEvent.Properties);
+            Assert.Equal(expectedLoggedSerilogEvent.Properties, objectSentIn.Properties);
         }
 
 
@@ -54,9 +54,9 @@ namespace Unittests
             emitter.Emit(evt, p => p.Add(new LogEventProperty("LogThis", new ScalarValue("SomeAdditionalValue"))));
 
 
-            var seriLogEvent = CreateExpectedLoggedSerilogEvent(evt, AdditionalProp:new LogEventProperty("LogThis", new ScalarValue("SomeAdditionalValue")));
-            
-            Assert.Equal(objectSentIn.Properties, seriLogEvent.Properties);
+            var expectedSerilogEvent = CreateExpectedLoggedSerilogEvent(evt, AdditionalProp:new LogEventProperty("LogThis", new ScalarValue("SomeAdditionalValue")));
+
+            Assert.Equal(expectedSerilogEvent.Properties, objectSentIn.Properties);
         }
 
         [Fact]
@@ -96,11 +96,25 @@ namespace Unittests
             A.CallTo(() => logEventSink.Emit(A<LogEvent>._)).Invokes(call => objectSentIn = call.GetArgument<LogEvent>(0));
 
             emitter.Emit(evt);
+            Assert.Equal("False", objectSentIn.Properties["HasContext"].ToString());
+        }
 
+        [Fact]
+        public void WhenReceivingEmptyMsg_SetsNoneString()
+        {
+            var mockSink = new Fake<ILogEventSink>();
+            ILogEventSink logEventSink = mockSink.FakedObject;
+            var emitter = new Emitter(logEventSink);
 
-            
+            var evt = CreateIdSrvEvent();
+            evt.Message = null;
 
-            Assert.Equal(objectSentIn.Properties["HasContext"].ToString(), "False");
+            // Fetch object that was sent into elastic sink 
+            LogEvent objectSentIn = null;
+            A.CallTo(() => logEventSink.Emit(A<LogEvent>._)).Invokes(call => objectSentIn = call.GetArgument<LogEvent>(0));
+
+            emitter.Emit(evt);
+            Assert.Equal("None", objectSentIn.MessageTemplate.ToString());
         }
 
         [Fact(Skip = "Only use if you want to test against a real elastic node")]
@@ -177,7 +191,7 @@ namespace Unittests
         /// <returns></returns>
         private ILogEventSink GetRealSink()
         {
-            var options = new ElasticsearchSinkOptions(new Uri("http://your.logstashserver.com"));
+            var options = new ElasticsearchSinkOptions(new Uri("http://your.elasticsearch.instance"));
             options.TypeName = "idsrvevent";
             return new ElasticsearchSink(options);
         }
