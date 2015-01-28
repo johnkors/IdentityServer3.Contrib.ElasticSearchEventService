@@ -56,14 +56,14 @@ namespace Thinktecture.IdentityServer.Services.Contrib
                 addAdditionalProperties(properties);
             }
 
-            var msg = !string.IsNullOrEmpty(evt.Message) ? evt.Message : _NONE;
+            var errorMessage = !string.IsNullOrEmpty(evt.Message) ? evt.Message : _NONE;
 
             var messageTemplateTokens = new List<MessageTemplateToken>
             {
-                new PropertyToken("message", msg)
+                new PropertyToken("message", errorMessage)
             };
 
-            var messageTemplate = new MessageTemplate(msg, messageTemplateTokens);
+            var messageTemplate = new MessageTemplate(errorMessage, messageTemplateTokens);
             var nativeEvent = new LogEvent(ts, LogEventLevel.Information, null, messageTemplate, properties);
             _sink.Emit(nativeEvent);
         }
