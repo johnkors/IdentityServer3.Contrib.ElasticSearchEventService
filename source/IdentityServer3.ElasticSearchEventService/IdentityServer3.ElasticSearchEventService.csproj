@@ -61,6 +61,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ElasticSearchEventService.cs" />
+    <Compile Include="IAddExtraPropertiesToEvents.cs" />
+    <Compile Include="NoOpAdder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SinkEmitter.cs" />
   </ItemGroup>

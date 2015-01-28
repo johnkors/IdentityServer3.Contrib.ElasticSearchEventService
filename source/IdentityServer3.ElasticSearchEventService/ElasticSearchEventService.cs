@@ -8,10 +8,10 @@ namespace Thinktecture.IdentityServer.Services.Contrib
     {
         private readonly Emitter _emitter;
 
-        public ElasticSearchEventService(ElasticsearchSinkOptions options)
+        public ElasticSearchEventService(ElasticsearchSinkOptions options, IAddExtraPropertiesToEvents adder = null)
         {
             var sink = new ElasticsearchSink(options);
-            _emitter = new Emitter(sink);
+            _emitter = new Emitter(sink, adder);
         }
 
         public void Raise<T>(Event<T> evt)
