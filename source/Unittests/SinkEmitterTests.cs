@@ -37,13 +37,12 @@ namespace Unittests
             Assert.Equal(expectedLoggedSerilogEvent.Properties, objectSentIn.Properties);
         }
 
-
         [Fact]
         public void WhenEmittingAdditionals_EmitsAllIdServerPropertiesAndAdditonals()
         {
             var mockSink = new Fake<ILogEventSink>();
             ILogEventSink logEventSink = mockSink.FakedObject;
-            var emitter = new Emitter(logEventSink, new TestAdder());
+            var emitter = new Emitter(logEventSink);
 
             var evt = CreateIdSrvEvent();
 

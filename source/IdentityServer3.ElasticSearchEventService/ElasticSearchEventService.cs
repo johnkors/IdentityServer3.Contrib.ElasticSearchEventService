@@ -1,4 +1,5 @@
-﻿using Serilog.Sinks.ElasticSearch;
+﻿using IdentityServer3.ElasticSearchEventService.Mapping;
+using Serilog.Sinks.ElasticSearch;
 using Thinktecture.IdentityServer.Core.Events;
 using Thinktecture.IdentityServer.Core.Services;
 
@@ -8,10 +9,10 @@ namespace Thinktecture.IdentityServer.Services.Contrib
     {
         private readonly Emitter _emitter;
 
-        public ElasticSearchEventService(ElasticsearchSinkOptions options, IAddExtraPropertiesToEvents adder = null)
+        public ElasticSearchEventService(ElasticsearchSinkOptions options, ILogEventMapper mapper = null)
         {
             var sink = new ElasticsearchSink(options);
-            _emitter = new Emitter(sink, adder);
+            _emitter = new Emitter(sink, mapper);
         }
 
         public void Raise<T>(Event<T> evt)
