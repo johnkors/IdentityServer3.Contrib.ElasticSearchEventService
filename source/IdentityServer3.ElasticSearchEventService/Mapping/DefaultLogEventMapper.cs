@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using IdentityServer3.ElasticSearchEventService.Mapping.Configuration;
 using Serilog.Events;
 using Serilog.Parsing;
 using Thinktecture.IdentityServer.Core.Events;
@@ -11,15 +12,15 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping
     {
         private const string None = "None";
 
-        private readonly LogEventMappingOptions _options;
+        private readonly MappingConfiguration _configuration;
 
-        public DefaultLogEventMapper() : this(new LogEventMappingOptions())
+        public DefaultLogEventMapper() : this(new MappingConfiguration())
         {
         }
 
-        public DefaultLogEventMapper(LogEventMappingOptions options)
+        public DefaultLogEventMapper(MappingConfiguration configuration)
         {
-            _options = options;
+            _configuration = configuration;
         }
 
         public LogEvent Map<T>(Event<T> evt)
@@ -51,11 +52,15 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping
             yield return LogEventProp("Id", evt.Id);
             yield return LogEventProp("Name", evt.Name);
 
-
-            var detailFields = _options.DetailMaps.GetFields(evt.Details) ?? new Dictionary<string, object>();
+            var detailFields = _configuration.DetailMaps.GetFields(evt.Details) ?? new Dictionary<string, object>();
             foreach (var field in detailFields)
             {
                 yield return LogEventProp(string.Format("Details.{0}", field.Key), field.Value);
+            }
+
+            foreach (var alwaysAddedValue in _configuration.AlwaysAddedValues)
+            {
+                yield return LogEventProp(alwaysAddedValue.Key, alwaysAddedValue.Value);
             }
         }
 

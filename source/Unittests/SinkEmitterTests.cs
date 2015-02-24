@@ -8,6 +8,7 @@ using Serilog.Parsing;
 using Serilog.Sinks.ElasticSearch;
 using Thinktecture.IdentityServer.Core.Events;
 using Thinktecture.IdentityServer.Services.Contrib;
+using Unittests.TestData;
 using Xunit;
 
 namespace Unittests
@@ -201,10 +202,5 @@ namespace Unittests
         {
             return new Dictionary<string, string>{ { "LogThis", "SomeAdditionalValue"}};
         }
-    }
-
-    public class TestObject
-    {
-        public string SomeString { get; set; }
     }
 }
