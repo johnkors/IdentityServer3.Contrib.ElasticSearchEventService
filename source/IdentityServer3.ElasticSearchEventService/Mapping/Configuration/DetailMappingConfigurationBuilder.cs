@@ -19,6 +19,22 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping.Configuration
             return this;
         }
 
+        public DetailMappingConfigurationBuilder DefaultMapAllMembers()
+        {
+            return DefaultMapper(new UniversalObjectMapper());
+        }
+
+        public DetailMappingConfigurationBuilder DefaultToJson(string fieldName = "Json")
+        {
+            return DefaultMapper(new JsonMapper(fieldName));
+        }
+
+        public DetailMappingConfigurationBuilder DefaultMapper(IObjectMapper defaultMapper)
+        {
+            _configuration.DefaultMapper = defaultMapper;
+            return this;
+        }
+
         public DetailMappingConfiguration GetConfiguration()
         {
             return _configuration;

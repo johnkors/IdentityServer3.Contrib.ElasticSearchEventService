@@ -11,7 +11,7 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping.Configuration
         public DetailMappingConfiguration()
         {
             ObjectMappers = new Dictionary<Type, IObjectMapper>();
-            DefaultMapper = new JsonMapper();
+            DefaultMapper = new UniversalObjectMapper();
         }
 
         public DetailMappingConfiguration Add<T>(Action<ObjectMapper<T>> action)

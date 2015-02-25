@@ -26,6 +26,12 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping.Configuration
             return this;
         }
 
+        public MappingConfigurationBuilder AlwaysAdd(string key, Func<object> value)
+        {
+            _alwaysAddedValues[key] = value();
+            return this;
+        }
+
         public MappingConfiguration GetConfiguration()
         {
             return new MappingConfiguration

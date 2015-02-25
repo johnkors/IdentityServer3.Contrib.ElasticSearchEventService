@@ -1,18 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace IdentityServer3.ElasticSearchEventService.Extensions
 {
-    public class ExpressionVisitor
+    public class MemberPathVisitor
     {
         private readonly IList<string> _names = new List<string>();
 
-        public string GetPropertyPath(LambdaExpression lambda)
+        public string MemberPath { get { return string.Join(".", _names); } }
+
+        public MemberPathVisitor(LambdaExpression lambda)
         {
             Visit(lambda.Body);
-            return string.Join(".", _names);
         }
 
         public void Visit(Expression expression)
@@ -39,24 +41,28 @@ namespace IdentityServer3.ElasticSearchEventService.Extensions
             _names.Add(member.Member.Name);
         }
 
-        private void DoVisit(ParameterExpression parameter)
-        {
-        }
-
         private void DoVisit(MethodCallExpression method)
         {
-            if (method.Method.IsDefined(typeof (ExtensionAttribute), false))
+            if (IsExtensionMethod(method.Method))
             {
                 Visit(method.Arguments.First());
             }
-            _names.Add(method.Method.Name);
+            _names.Add(string.Format("{0}()", method.Method.Name));
+        }
+
+        private static bool IsExtensionMethod(MethodInfo method)
+        {
+            return method.IsDefined(typeof (ExtensionAttribute), false);
         }
 
         private static void DoVisit(object invalid)
         {
-            var type = invalid.GetType();
-            return;
-            //throw new InvalidOperationException(string.Format("Don't know how to visit {0}", invalid.GetType()));
+            
+        }
+
+        public override string ToString()
+        {
+            return MemberPath;
         }
     }
 }

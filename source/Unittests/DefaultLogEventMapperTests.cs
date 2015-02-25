@@ -3,7 +3,6 @@ using System.Linq;
 using IdentityServer3.ElasticSearchEventService.Mapping;
 using IdentityServer3.ElasticSearchEventService.Mapping.Configuration;
 using Thinktecture.IdentityServer.Core.Events;
-using Unittests.TestData;
 using Xunit;
 
 namespace Unittests
@@ -15,25 +14,27 @@ namespace Unittests
         {
             var configuration = new MappingConfigurationBuilder()
                 .DetailMaps(c => c
-                    .For<TestObject>(o => o
-                        .Map(t => t.SomeString)
-                        .Map(t => t.GetType().Name)
-                        .Map(t => t.Inner.Numbers.FirstOrDefault())
+                    .For<AccessTokenIssuedDetails>(m => m
+                        .Map(d => d.ClientId)
+                        .Map(d => d.ToString())
+                        .MapRemainingMembersAsJson()
+                        .MapRemainingMembers()
                     )
+                    .DefaultMapAllMembers()
                 )
-                .AlwaysAdd("pølse", "maker")
+                .AlwaysAdd("agurk", () => DateTime.Now)
                 .GetConfiguration();
 
-            var mapper = new DefaultLogEventMapper(configuration);
+            var mapper = new DefaultLogEventMapper(new MappingConfiguration());
 
-            var logEvent = mapper.Map(new Event<TestObject>("category", "name", EventTypes.Information, 42, new TestObject{SomeString = "pølse", Inner = new InnerObject{Value="maker"}}));
+            var logEvent = mapper.Map(new Event<AccessTokenIssuedDetails>("category", "name", EventTypes.Information, 42, new AccessTokenIssuedDetails{ClientId = "klienten"}));
             
             Print(string.Join(Environment.NewLine, logEvent.Properties.Select(p => string.Join("=", p.Key, p.Value))));
         }
 
-        private static void Print(string value)
+        private static void Print(object value)
         {
-            throw new Exception(value);
+            throw new Exception(string.Format(">{0}<", value));
         }
     }
 }

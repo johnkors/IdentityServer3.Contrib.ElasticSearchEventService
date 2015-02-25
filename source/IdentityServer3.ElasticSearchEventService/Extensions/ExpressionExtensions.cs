@@ -5,9 +5,14 @@ namespace IdentityServer3.ElasticSearchEventService.Extensions
 {
     public static class ExpressionExtensions
     {
-        public static string GetMemberName<T>(this Expression<Func<T, object>> expression)
+        public static string GetMemberPath<T>(this Expression<Func<T, object>> expression)
         {
-            return new ExpressionVisitor().GetPropertyPath(expression);
+            return new MemberPathVisitor(expression).MemberPath;
+        }
+
+        public static MemberExpression GetMemberExpressionOrNull<T>(this Expression<Func<T, object>> expression)
+        {
+            return GetMemberExpression(expression.Body);
         }
 
         private static Expression StripQuotes(Expression expression)
@@ -37,7 +42,7 @@ namespace IdentityServer3.ElasticSearchEventService.Extensions
 
         private static MemberExpression DoGetMemberExpression(object invalid)
         {
-            throw new InvalidOperationException(string.Format("Don't know how to get MemberExpression from {0}", invalid.GetType()));
+            return null;
         }
     }
 }
