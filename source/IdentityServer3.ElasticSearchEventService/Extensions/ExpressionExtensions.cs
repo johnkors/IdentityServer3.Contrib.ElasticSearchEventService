@@ -15,7 +15,7 @@ namespace IdentityServer3.ElasticSearchEventService.Extensions
             return GetMemberExpression(expression.Body);
         }
 
-        private static Expression StripQuotes(Expression expression)
+        public static Expression StripQuotes(this Expression expression)
         {
             var exp = expression;
             while (exp is UnaryExpression)

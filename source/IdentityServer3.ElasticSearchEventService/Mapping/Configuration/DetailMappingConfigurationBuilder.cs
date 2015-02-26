@@ -11,9 +11,9 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping.Configuration
             _configuration = new DetailMappingConfiguration();
         }
 
-        public DetailMappingConfigurationBuilder For<T>(Action<ObjectMapper<T>> map)
+        public DetailMappingConfigurationBuilder For<T>(Action<TypedObjectMapper<T>> map)
         {
-            var mapper = new ObjectMapper<T>();
+            var mapper = new TypedObjectMapper<T>();
             map(mapper);
             _configuration.ObjectMappers[typeof (T)] = mapper;
             return this;
@@ -21,7 +21,7 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping.Configuration
 
         public DetailMappingConfigurationBuilder DefaultMapAllMembers()
         {
-            return DefaultMapper(new UniversalObjectMapper());
+            return DefaultMapper(new AdHocObjectMapper());
         }
 
         public DetailMappingConfigurationBuilder DefaultToJson(string fieldName = "Json")

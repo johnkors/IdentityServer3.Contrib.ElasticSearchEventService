@@ -63,7 +63,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ElasticSearchEventService.cs" />
+    <Compile Include="Extensions\ExceptionExtensions.cs" />
     <Compile Include="Extensions\ExpressionExtensions.cs" />
+    <Compile Include="Extensions\FuncExtensions.cs" />
+    <Compile Include="Extensions\JsonExtensions.cs" />
     <Compile Include="Extensions\MemberPathVisitor.cs" />
     <Compile Include="Extensions\ReflectionExtensions.cs" />
     <Compile Include="IAddExtraPropertiesToEvents.cs" />
@@ -75,8 +78,8 @@
     <Compile Include="Mapping\DefaultLogEventMapper.cs" />
     <Compile Include="Mapping\ILogEventMapper.cs" />
     <Compile Include="Mapping\IObjectMapper.cs" />
-    <Compile Include="Mapping\ObjectMapper.cs" />
-    <Compile Include="Mapping\UniversalObjectMapper.cs" />
+    <Compile Include="Mapping\TypedObjectMapper.cs" />
+    <Compile Include="Mapping\AdHocObjectMapper.cs" />
     <Compile Include="NoOpAdder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SinkEmitter.cs" />

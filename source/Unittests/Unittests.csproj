@@ -79,9 +79,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DefaultLogEventMapperTests.cs" />
+    <Compile Include="Extensions\ExpressionExtensions.cs" />
+    <Compile Include="Extensions\LambdaString.cs" />
     <Compile Include="SinkEmitterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestData\InnerObject.cs" />
+    <Compile Include="TestData\InnerTestDetails.cs" />
+    <Compile Include="TestData\RottenTomato.cs" />
+    <Compile Include="TestData\Some.cs" />
+    <Compile Include="TestData\TestDetails.cs" />
     <Compile Include="TestData\TestObject.cs" />
   </ItemGroup>
   <ItemGroup>

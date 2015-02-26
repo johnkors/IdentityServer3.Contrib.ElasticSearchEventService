@@ -4,38 +4,67 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using IdentityServer3.ElasticSearchEventService.Extensions;
-using Newtonsoft.Json;
 
 namespace IdentityServer3.ElasticSearchEventService.Mapping
 {
-    public class ObjectMapper<T> : IObjectMapper
+    public class TypedObjectMapper<T> : IObjectMapper
     {
         public Type Type { get; private set; }
 
         private readonly IDictionary<string, Func<T, object>> _maps = new Dictionary<string, Func<T, object>>();
 
+        public IEnumerable<MemberInfo> HandledMembers { get { return MappedMembers.Concat(IgnoredMembers); } }
+        public ISet<MemberInfo> IgnoredMembers { get; private set; }
         public ISet<MemberInfo> MappedMembers { get; private set; }
-        public IEnumerable<MemberInfo> UnmappedMembers { get { return Type.GetMembers().Where(m => MappedMembers.All(o => o.Name != m.Name)); } }
+        public IEnumerable<MemberInfo> UnmappedMembers { get { return Type.GetMembers().Where(m => HandledMembers.All(o => o.Name != m.Name)); } }
 
-        public ObjectMapper()
+        public TypedObjectMapper()
         {
             Type = typeof (T);
             MappedMembers = new HashSet<MemberInfo>();
+            IgnoredMembers = new HashSet<MemberInfo>();
         }
 
-        public ObjectMapper<T> Map(Expression<Func<T, object>> expression)
+        public TypedObjectMapper<T> Ignore(Expression<Func<T, object>> expression)
+        {
+            var memberExpression = expression.GetMemberExpressionOrNull();
+            if (memberExpression == null)
+            {
+                return this;
+            }
+            IgnoredMembers.Add(memberExpression.Member);
+            return this;
+        }
+
+        public TypedObjectMapper<T> Map(Expression<Func<T, object>> expression)
         {
             return Map(expression.GetMemberPath(), expression);
         }
 
-        public ObjectMapper<T> Map(string name, Expression<Func<T, object>> expression)
+        public TypedObjectMapper<T> Map(string name, Expression<Func<T, object>> expression)
         {
             var memberExpression = expression.GetMemberExpressionOrNull();
             if (memberExpression != null && memberExpression.Member.BelongsTo(Type))
             {
                 MappedMembers.Add(memberExpression.Member);
             }
-            _maps[name] = expression.Compile();
+            var func = expression.Compile();
+            _maps[name] = expression.Body.Type.IsSimpleType()
+                ? func
+                : t => func(t).ToJsonSuppressErrors();
+            return this;
+        }
+
+        public TypedObjectMapper<T> MapRemainingMembers()
+        {
+            foreach (var property in UnmappedMembers.OfType<PropertyInfo>())
+            {
+                Map(property.Name, property.ToLambda<T>());
+            }
+            foreach (var field in UnmappedMembers.OfType<FieldInfo>())
+            {
+                Map(field.Name, field.ToLambda<T>());
+            }
             return this;
         }
 
@@ -61,7 +90,7 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping
             var fields = new Dictionary<string, object>();
             foreach (var pair in _maps)
             {
-                fields[pair.Key] = pair.Value(item);
+                fields[pair.Key] = pair.Value.TryInvoke(item);
             }
             return fields;
         }
@@ -71,7 +100,7 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping
             return o == null;
         }
 
-        public ObjectMapper<T> MapRemainingMembersAsJson(string name = "Json")
+        public TypedObjectMapper<T> MapRemainingMembersAsJson(string name = "Json")
         {
             _maps[name] = RemainingMembersAsJson;
             return this;
@@ -82,13 +111,13 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping
             var dictionary = new Dictionary<string, object>();
             foreach (var property in UnmappedMembers.OfType<PropertyInfo>())
             {
-                dictionary[property.Name] = property.GetValue(item);
+                dictionary[property.Name] = property.TryGetValue(item);
             }
             foreach (var field in UnmappedMembers.OfType<FieldInfo>())
             {
-                dictionary[field.Name] = field.GetValue(item);
+                dictionary[field.Name] = field.TryGetValue(item);
             }
-            return JsonConvert.SerializeObject(dictionary);
+            return dictionary.ToJsonSuppressErrors();
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+using IdentityServer3.ElasticSearchEventService.Extensions;
 
 namespace IdentityServer3.ElasticSearchEventService.Mapping
 {
@@ -23,7 +23,7 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping
             {
                 return dictionary;
             }
-            dictionary[_fieldName] = JsonConvert.SerializeObject(item);
+            dictionary[_fieldName] = item.ToJsonSuppressErrors();
             return dictionary;
         }
     }

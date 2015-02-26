@@ -11,12 +11,12 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping.Configuration
         public DetailMappingConfiguration()
         {
             ObjectMappers = new Dictionary<Type, IObjectMapper>();
-            DefaultMapper = new UniversalObjectMapper();
+            DefaultMapper = new AdHocObjectMapper();
         }
 
-        public DetailMappingConfiguration Add<T>(Action<ObjectMapper<T>> action)
+        public DetailMappingConfiguration Add<T>(Action<TypedObjectMapper<T>> action)
         {
-            var mapper = new ObjectMapper<T>();
+            var mapper = new TypedObjectMapper<T>();
             action(mapper);
             ObjectMappers[typeof(T)] = mapper;
             return this;

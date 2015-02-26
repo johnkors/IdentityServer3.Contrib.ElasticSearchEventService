@@ -25,15 +25,9 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping
 
         public LogEvent Map<T>(Event<T> evt)
         {
-            var properties = GetProperties(evt).Concat(GetContextProps(evt)).ToList();
+            var properties = GetProperties(evt).ToList();
 
-            var ts = DateTimeOffset.UtcNow;
-            if (evt.Context != null)
-            {
-                ts = evt.Context.TimeStamp;
-            }
-
-            var errorMessage = !string.IsNullOrEmpty(evt.Message) ? evt.Message : None;
+            var errorMessage = GetErrorMessage(evt);
 
             var messageTemplateTokens = new List<MessageTemplateToken>
             {
@@ -42,11 +36,39 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping
 
             var messageTemplate = new MessageTemplate(errorMessage, messageTemplateTokens);
 
-            return new LogEvent(ts, LogEventLevel.Information, null, messageTemplate, properties);
+            return new LogEvent(GetTimestamp(evt), LogEventLevel.Information, null, messageTemplate, properties);
+        }
+
+        private string GetErrorMessage<T>(Event<T> evt)
+        {
+            if (evt == null)
+            {
+                return None;
+            }
+            return !string.IsNullOrEmpty(evt.Message) ? evt.Message : None;
+        }
+
+        private DateTimeOffset GetTimestamp<T>(Event<T> evt)
+        {
+            if (evt != null && evt.Context != null)
+            {
+                return evt.Context.TimeStamp;
+            }
+            return DateTimeOffset.UtcNow;
         }
 
         private IEnumerable<LogEventProperty> GetProperties<T>(Event<T> evt)
         {
+            return GetEventProperties(evt).Concat(GetAlwaysAddedProps()).Concat(GetContextProps(evt));
+        }
+
+        private IEnumerable<LogEventProperty> GetEventProperties<T>(Event<T> evt)
+        {
+            if (evt == null)
+            {
+                yield break;
+            }
+
             yield return LogEventProp("Category", evt.Category);
             yield return LogEventProp("EventType", evt.EventType);
             yield return LogEventProp("Id", evt.Id);
@@ -64,8 +86,18 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping
             }
         }
 
+        private IEnumerable<LogEventProperty> GetAlwaysAddedProps()
+        {
+            return _configuration.AlwaysAddedValues.Select(v => LogEventProp(v.Key, v.Value));
+        }
+
         private static IEnumerable<LogEventProperty> GetContextProps<T>(Event<T> evt)
         {
+            if (evt == null)
+            {
+                yield break;
+            }
+
             if (evt.Context != null)
             {
                 yield return new LogEventProperty("HasContext", new ScalarValue(true));
