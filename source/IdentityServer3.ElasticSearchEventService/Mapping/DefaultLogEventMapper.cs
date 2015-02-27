@@ -39,7 +39,7 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping
             return new LogEvent(GetTimestamp(evt), LogEventLevel.Information, null, messageTemplate, properties);
         }
 
-        private string GetErrorMessage<T>(Event<T> evt)
+        private static string GetErrorMessage<T>(Event<T> evt)
         {
             if (evt == null)
             {
@@ -48,7 +48,7 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping
             return !string.IsNullOrEmpty(evt.Message) ? evt.Message : None;
         }
 
-        private DateTimeOffset GetTimestamp<T>(Event<T> evt)
+        private static DateTimeOffset GetTimestamp<T>(Event<T> evt)
         {
             if (evt != null && evt.Context != null)
             {
@@ -62,7 +62,7 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping
             return GetEventProperties(evt).Concat(GetAlwaysAddedProps()).Concat(GetContextProps(evt));
         }
 
-        private IEnumerable<LogEventProperty> GetEventProperties<T>(Event<T> evt)
+        protected virtual IEnumerable<LogEventProperty> GetEventProperties<T>(Event<T> evt)
         {
             if (evt == null)
             {
@@ -91,7 +91,7 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping
             return _configuration.AlwaysAddedValues.Select(v => LogEventProp(v.Key, v.Value));
         }
 
-        private static IEnumerable<LogEventProperty> GetContextProps<T>(Event<T> evt)
+        protected virtual IEnumerable<LogEventProperty> GetContextProps<T>(Event<T> evt)
         {
             if (evt == null)
             {
@@ -118,7 +118,7 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping
             }
         }
 
-        private static LogEventProperty LogEventProp(string name, object eventProp = null)
+        protected static LogEventProperty LogEventProp(string name, object eventProp = null)
         {
             var prop = eventProp ?? None;
             return new LogEventProperty(name, new ScalarValue(prop));
