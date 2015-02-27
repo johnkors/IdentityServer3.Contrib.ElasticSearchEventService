@@ -174,9 +174,9 @@ namespace Unittests.Extensions
             Visit(lambda.Body);
         }
 
-        private static void DoVisit(object unknown)
+        private void DoVisit(object unknown)
         {
-            throw new InvalidOperationException(string.Format("Don't know how to visit {0}", unknown.GetType().Name));
+            _expressions.Push(unknown);
         }
 
         public override string ToString()
