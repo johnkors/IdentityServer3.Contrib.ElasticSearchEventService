@@ -13,14 +13,22 @@ namespace IdentityServer3.ElasticSearchEventService.Extensions
         {
             var parameter = Expression.Parameter(typeof (T), "item");
             var call = Expression.Call(parameter, property.GetGetMethod());
-            return Expression.Lambda<Func<T, object>>(call, parameter);
+            var body = ConvertIfValueType(call);
+            var lambda = Expression.Lambda<Func<T, object>>(body, parameter);
+            return lambda;
         }
 
         public static Expression<Func<T, object>> ToLambda<T>(this FieldInfo field)
         {
             var parameter = Expression.Parameter(typeof(T), "item");
             var call = Expression.Field(parameter, field);
-            return Expression.Lambda<Func<T, object>>(call, parameter);
+            var body = ConvertIfValueType(call);
+            return Expression.Lambda<Func<T, object>>(body, parameter);
+        }
+
+        private static Expression ConvertIfValueType(Expression expression)
+        {
+            return expression.Type.IsValueType ? Expression.Convert(expression, typeof (object)) : expression;
         }
 
         public static bool BelongsTo(this MemberInfo member, Type type)

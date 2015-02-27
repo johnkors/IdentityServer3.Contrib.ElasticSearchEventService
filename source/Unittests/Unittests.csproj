@@ -101,6 +101,8 @@
     <Compile Include="TestData\Some.cs" />
     <Compile Include="TestData\TestDetails.cs" />
     <Compile Include="TestData\TestObject.cs" />
+    <Compile Include="TestData\TestEnum.cs" />
+    <Compile Include="TestData\TestStruct.cs" />
     <Compile Include="TypedObjectMapperTest.cs" />
   </ItemGroup>
   <ItemGroup>
