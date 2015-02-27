@@ -16,7 +16,7 @@ namespace IdentityServer3.ElasticSearchEventService.Mapping
         public IEnumerable<MemberInfo> HandledMembers { get { return MappedMembers.Concat(IgnoredMembers); } }
         public ISet<MemberInfo> IgnoredMembers { get; private set; }
         public ISet<MemberInfo> MappedMembers { get; private set; }
-        public IEnumerable<MemberInfo> UnmappedMembers { get { return Type.GetMembers().Where(m => HandledMembers.All(o => o.Name != m.Name)); } }
+        public IEnumerable<MemberInfo> UnmappedMembers { get { return Type.GetPublicPropertiesAndFields().Where(m => HandledMembers.All(o => o.Name != m.Name)); } }
 
         public TypedObjectMapper()
         {

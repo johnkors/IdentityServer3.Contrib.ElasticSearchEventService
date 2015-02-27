@@ -69,7 +69,6 @@
     <Compile Include="Extensions\JsonExtensions.cs" />
     <Compile Include="Extensions\MemberPathVisitor.cs" />
     <Compile Include="Extensions\ReflectionExtensions.cs" />
-    <Compile Include="IAddExtraPropertiesToEvents.cs" />
     <Compile Include="Mapping\Configuration\DetailMappingConfiguration.cs" />
     <Compile Include="Mapping\Configuration\DetailMappingConfigurationBuilder.cs" />
     <Compile Include="Mapping\Configuration\MappingConfiguration.cs" />
@@ -80,9 +79,8 @@
     <Compile Include="Mapping\IObjectMapper.cs" />
     <Compile Include="Mapping\TypedObjectMapper.cs" />
     <Compile Include="Mapping\AdHocObjectMapper.cs" />
-    <Compile Include="NoOpAdder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SinkEmitter.cs" />
+    <Compile Include="Emitter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

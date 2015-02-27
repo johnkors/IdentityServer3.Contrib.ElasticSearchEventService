@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using IdentityServer3.ElasticSearchEventService.Extensions;
 using IdentityServer3.ElasticSearchEventService.Mapping;
 using IdentityServer3.ElasticSearchEventService.Mapping.Configuration;
 using Serilog.Events;
 using Thinktecture.IdentityServer.Core.Events;
 using Unittests.Extensions;
+using Unittests.Proofs;
 using Unittests.TestData;
 using Xunit;
 
@@ -34,7 +33,7 @@ namespace Unittests
 
             var logEvent = mapper.Map(CreateEvent(details));
 
-            AssertContains(logEvent.Properties, Expected("Details.String", Quote("Polse")));
+            logEvent.Properties.DoesContain(LogEventValueWith("Details.String", Quote("Polse")));
         }
         
         [Fact]
@@ -44,7 +43,7 @@ namespace Unittests
 
             var logEvent = mapper.Map(CreateEvent(new object()));
 
-            AssertContains(logEvent.Properties, Expected("some", Quote("value")));
+            logEvent.Properties.DoesContain(LogEventValueWith("some", Quote("value")));
         }
 
         [Fact]
@@ -59,7 +58,7 @@ namespace Unittests
 
             var logEvent = mapper.Map(CreateEvent(new TestDetails {String = Some.String}));
 
-            AssertContains(logEvent.Properties, Expected("Details.specificName", Quote(Some.String)));
+            logEvent.Properties.DoesContain(LogEventValueWith("Details.specificName", Quote(Some.String)));
         }
 
         [Fact]
@@ -74,7 +73,7 @@ namespace Unittests
 
             var logEvent = mapper.Map(CreateEvent(new TestDetails()));
 
-            AssertContains(logEvent.Properties, Expected("Details.ThrowsException", s => s.StartsWith("\"athrew")));
+            logEvent.Properties.DoesContain(LogEventValueWith("Details.ThrowsException", s => s.StartsWith("\"threw")));
         }
 
         [Fact]
@@ -86,13 +85,9 @@ namespace Unittests
                 ));
             var logEvent = mapper.Map(CreateEvent(new TestDetails()));
 
-            var members = typeof (TestDetails).GetMembers().Where(m => m is PropertyInfo || m is FieldInfo);
+            var members = typeof (TestDetails).GetPublicPropertiesAndFields().Select(m => string.Format("Details.{0}", m.Name));
 
-            foreach (var member in members)
-            {
-                var m = member;
-                AssertContains(logEvent.Properties, p => p.Key == "Details."+ m.Name);
-            }
+            logEvent.Properties.DoesContainKeys(members);
         }
 
         [Fact]
@@ -105,7 +100,9 @@ namespace Unittests
             var details = new TestDetails();
             var logEvent = mapper.Map(CreateEvent(details));
 
-            Assert.Equal(Quote(details.Inner.ToJsonSuppressErrors()), logEvent.Properties["Details.Inner"].ToString());
+            var logProperty = logEvent.GetProperty<ScalarValue>("Details.Inner");
+
+            logProperty.Value.IsEqualTo(details.Inner.ToJsonSuppressErrors());
         }
 
         private static string Quote(string value)
@@ -113,30 +110,14 @@ namespace Unittests
             return string.Format("\"{0}\"", value);
         }
 
-        private static void AssertContains<T>(IEnumerable<T> collection, Expression<Func<T, bool>> predicate)
-        {
-            var func = predicate.Compile();
-            if (collection.Any(func))
-            {
-                return;
-            }
-            throw new Exception(string.Format("Expected {0} with {1}, but found none.", typeof(T).Name, predicate.ToFriendlyString()));
-        }
-
-        private static Expression<Func<KeyValuePair<string, LogEventPropertyValue>, bool>> Expected(string key, Func<string,bool> satisfies)
+        private static Expression<Func<KeyValuePair<string, LogEventPropertyValue>, bool>> LogEventValueWith(string key, Func<string,bool> satisfies)
         {
             return p => p.Key == key && satisfies(p.Value.ToString());
         }
 
-        private static Expression<Func<KeyValuePair<string, LogEventPropertyValue>, bool>> Expected(string key, string value)
+        private static Expression<Func<KeyValuePair<string, LogEventPropertyValue>, bool>> LogEventValueWith(string key, string value)
         {
             return p => p.Key == key && p.Value.ToString() == value;
-        }
-        
-
-        private static void Print(object value)
-        {
-            throw new Exception(string.Format("{0}>{1}<",Environment.NewLine, value));
         }
 
         private static Event<T> CreateEvent<T>(T details)

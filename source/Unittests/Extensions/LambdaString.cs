@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using IdentityServer3.ElasticSearchEventService.Extensions;
 
 namespace Unittests.Extensions
 {
@@ -20,6 +21,10 @@ namespace Unittests.Extensions
 
         private void Visit(Expression expression)
         {
+            if (expression == null)
+            {
+                return;
+            }
             DoVisit((dynamic)expression);
         }
 
@@ -120,9 +125,15 @@ namespace Unittests.Extensions
 
         private void DoVisit(MethodCallExpression methodCall)
         {
+            var isExtension = methodCall.Method.IsExtensionMethod();
+            if (isExtension)
+            {
+                Visit(methodCall.Arguments[0]);
+            }
             Visit(methodCall.Object);
             _expressions.Push(methodCall.Method.Name);
-            foreach (var expression in methodCall.Arguments)
+            var arguments = isExtension ? methodCall.Arguments.Skip(1) : methodCall.Arguments;
+            foreach (var expression in arguments)
             {
                 Visit(expression);
             }
@@ -145,7 +156,7 @@ namespace Unittests.Extensions
             {
                 return string.Format("'{0}'", value);
             }
-            return value;
+            return value.ToString();
         }
 
         private void DoVisit(ConstantExpression constant)
@@ -156,6 +167,11 @@ namespace Unittests.Extensions
         private void DoVisit(UnaryExpression unary)
         {
             Visit(unary.Operand);
+        }
+
+        private void DoVisit(LambdaExpression lambda)
+        {
+            Visit(lambda.Body);
         }
 
         private static void DoVisit(object unknown)

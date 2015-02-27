@@ -43,16 +43,11 @@ namespace IdentityServer3.ElasticSearchEventService.Extensions
 
         private void DoVisit(MethodCallExpression method)
         {
-            if (IsExtensionMethod(method.Method))
+            if (method.Method.IsExtensionMethod())
             {
                 Visit(method.Arguments.First());
             }
             _names.Add(string.Format("{0}()", method.Method.Name));
-        }
-
-        private static bool IsExtensionMethod(MethodInfo method)
-        {
-            return method.IsDefined(typeof (ExtensionAttribute), false);
         }
 
         private static void DoVisit(object invalid)

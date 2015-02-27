@@ -10,14 +10,14 @@ namespace Thinktecture.IdentityServer.Services.Contrib
         private readonly ILogEventSink _sink;
         private readonly ILogEventMapper _mapper;
 
-        public Emitter(ILogEventSink sink, ILogEventMapper adder = null)
+        public Emitter(ILogEventSink sink, ILogEventMapper mapper = null)
         {
             if (sink == null)
             {
                 throw new ArgumentNullException();
             }
             _sink = sink;
-            _mapper = adder ?? new DefaultLogEventMapper();
+            _mapper = mapper ?? new DefaultLogEventMapper();
         }
 
         public void Emit<T>(Event<T> evt)
