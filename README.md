@@ -17,13 +17,26 @@ Implementation of IdentityServerV3s IEventService using Serilogs ElasticSearchSi
    var eventService = new ElasticSearchEventService(options);
 ```
 
-Also support for enrichment of other properties than IdentityServer3s internal properties through the ```IAddExtraPropertiesToEvents``` interface.
+Also support for custom mapping through the ```MappingConfigurationBuilder``` class.
 
 ```
-   IAddExtraPropertiesToEvents adder = new MyOwnPropertiesAdder()
-   var elasticUri = new Uri("http://your.elasticsearch.instance/");
-   var options = new ElasticsearchSinkOptions(elasticUri);
-   var eventService = new ElasticSearchEventService(options, adder);
+    var configuration = new MappingConfigurationBuilder()
+    .DetailMaps(b => b
+        .For<AccessTokenIssuedDetails>(t => t
+            .Map(d => d.ClientId)
+            .Map("ScopeCount", d => d.Scopes.Count())
+            .MapRemainingMembersAsJson()
+        )
+        .DefaultMapAllMembers()
+    )
+    .AlwaysAdd("key", "value")
+    .AlwaysAdd("WeekDay", () => DateTime.Now.DayOfWeek)
+    .GetConfiguration();
+    
+    var eventMapper = new DefaultLogEventMapper(configuration);
+    var elasticUri = new Uri("http://your.elasticsearch.instance/");
+    var options = new ElasticsearchSinkOptions(elasticUri);
+    var eventService = new ElasticSearchEventService(options, adder);
 ```
 
 where a simple implementation is
