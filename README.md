@@ -21,17 +21,17 @@ Also support for custom mapping through the ```MappingConfigurationBuilder``` cl
 
 ```
     var configuration = new MappingConfigurationBuilder()
-    .DetailMaps(b => b
-        .For<AccessTokenIssuedDetails>(t => t
-            .Map(d => d.ClientId)
-            .Map("ScopeCount", d => d.Scopes.Count())
-            .MapRemainingMembersAsJson()
+        .DetailMaps(b => b
+            .For<AccessTokenIssuedDetails>(t => t
+                .Map(d => d.ClientId)
+                .Map("ScopeCount", d => d.Scopes.Count())
+                .MapRemainingMembersAsJson()
+            )
+            .DefaultMapAllMembers()
         )
-        .DefaultMapAllMembers()
-    )
-    .AlwaysAdd("key", "value")
-    .AlwaysAdd("WeekDay", () => DateTime.Now.DayOfWeek)
-    .GetConfiguration();
+        .AlwaysAdd("key", "value")
+        .AlwaysAdd("WeekDay", () => DateTime.Now.DayOfWeek)
+        .GetConfiguration();
     
     var eventMapper = new DefaultLogEventMapper(configuration);
     var elasticUri = new Uri("http://your.elasticsearch.instance/");
