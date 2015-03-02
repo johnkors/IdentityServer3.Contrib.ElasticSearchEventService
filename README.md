@@ -36,7 +36,7 @@ Also support for custom mapping through the ```MappingConfigurationBuilder``` cl
     var eventMapper = new DefaultLogEventMapper(configuration);
     var elasticUri = new Uri("http://your.elasticsearch.instance/");
     var options = new ElasticsearchSinkOptions(elasticUri);
-    var eventService = new ElasticSearchEventService(options, adder);
+    var eventService = new ElasticSearchEventService(options, eventMapper);
 ```
 
 where a simple implementation is
