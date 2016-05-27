@@ -1,7 +1,7 @@
 ﻿using System;
+using IdentityServer3.Core.Events;
 using Serilog.Core;
 using Serilog.Sinks.Elasticsearch;
-using Thinktecture.IdentityServer.Core.Events;
 using Thinktecture.IdentityServer.Services.Contrib;
 using Unittests.TestData;
 using Xunit;

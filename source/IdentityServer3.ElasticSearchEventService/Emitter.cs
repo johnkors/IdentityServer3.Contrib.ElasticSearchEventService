@@ -1,7 +1,7 @@
 using System;
+using IdentityServer3.Core.Events;
 using IdentityServer3.ElasticSearchEventService.Mapping;
 using Serilog.Core;
-using Thinktecture.IdentityServer.Core.Events;
 
 namespace Thinktecture.IdentityServer.Services.Contrib
 {

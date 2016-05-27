@@ -1,7 +1,8 @@
-﻿using IdentityServer3.ElasticSearchEventService.Mapping;
+﻿using System.Threading.Tasks;
+using IdentityServer3.Core.Events;
+using IdentityServer3.Core.Services;
+using IdentityServer3.ElasticSearchEventService.Mapping;
 using Serilog.Sinks.Elasticsearch;
-using Thinktecture.IdentityServer.Core.Events;
-using Thinktecture.IdentityServer.Core.Services;
 
 namespace Thinktecture.IdentityServer.Services.Contrib
 {
@@ -14,10 +15,11 @@ namespace Thinktecture.IdentityServer.Services.Contrib
             var sink = new ElasticsearchSink(options);
             _emitter = new Emitter(sink, mapper);
         }
-
-        public void Raise<T>(Event<T> evt)
+        
+        public Task RaiseAsync<T>(Event<T> evt)
         {
             _emitter.Emit(evt);
+            return Task.FromResult(0);
         }
     }
 }
