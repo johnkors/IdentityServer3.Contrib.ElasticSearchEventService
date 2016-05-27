@@ -1,5 +1,5 @@
 ﻿using IdentityServer3.ElasticSearchEventService.Mapping;
-using Serilog.Sinks.ElasticSearch;
+using Serilog.Sinks.Elasticsearch;
 using Thinktecture.IdentityServer.Core.Events;
 using Thinktecture.IdentityServer.Core.Services;
 
