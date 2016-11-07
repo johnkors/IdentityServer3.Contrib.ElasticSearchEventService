@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using IdentityServer3.Core.Events;
 using IdentityServer3.ElasticSearchEventService.Extensions;
 using IdentityServer3.ElasticSearchEventService.Mapping;
 using IdentityServer3.ElasticSearchEventService.Mapping.Configuration;
 using Serilog.Events;
-using Thinktecture.IdentityServer.Core.Events;
 using Unittests.Extensions;
 using Unittests.Proofs;
 using Unittests.TestData;

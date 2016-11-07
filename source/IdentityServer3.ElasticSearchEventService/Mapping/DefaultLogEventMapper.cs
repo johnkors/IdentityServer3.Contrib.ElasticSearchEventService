@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using IdentityServer3.Core.Events;
 using IdentityServer3.ElasticSearchEventService.Mapping.Configuration;
 using Serilog.Events;
 using Serilog.Parsing;
-using Thinktecture.IdentityServer.Core.Events;
 
 namespace IdentityServer3.ElasticSearchEventService.Mapping
 {
